@@ -63,5 +63,3 @@ bash Run.sh
 ## Estrategia de paralelización
 
 La versión secuencial sirve como referencia de base
-
-Traducción realizada con la versión gratuita del traductor DeepL.com
