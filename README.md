@@ -1,43 +1,43 @@
-# Parallel Programming with OpenMP
+# Programación paralela con OpenMP
 
-Parallel implementation in C using **OpenMP** (Open Multi-Processing), a shared-memory API for multi-threaded programming based on compiler directives (`#pragma omp`).
+Implementación paralela en C mediante **OpenMP** (Open Multi-Processing), una API de memoria compartida para la programación multihilo basada en directivas del compilador (`#pragma omp`).
 
-> Developed by **Javier González Fortes** and **Jose Victoria González** — University of Almería, Computer Science Dept.
-
----
-
-## What is OpenMP?
-
-OpenMP allows parallelizing C/C++/Fortran programs by annotating loops and regions with `#pragma omp` directives. All threads share the same memory space, which simplifies data sharing but requires careful handling of race conditions.
-
-Key concepts used in this project:
-
-- `#pragma omp parallel for` — distributes loop iterations across threads
-- `#pragma omp critical` / reductions — safe handling of shared variables
-- Thread-local random number generators (`lrand48_r`) — one independent sequence per thread
-- Loop unrolling — avoids race conditions without critical sections by ensuring threads always work on non-adjacent cells
+> Desarrollado por **Javier González Fortes** y **José Victoria González** — Universidad de Almería, Departamento de Informática.
 
 ---
 
-## Requirements
+## ¿Qué es OpenMP?
 
-- GCC with OpenMP support (`-fopenmp`)
-- Any standard Linux distribution
+OpenMP permite paralelizar programas en C/C++/Fortran mediante la anotación de bucles y regiones con directivas `#pragma omp`. Todos los subprocesos comparten el mismo espacio de memoria, lo que simplifica el intercambio de datos pero requiere un manejo cuidadoso de las condiciones de carrera.
+
+Conceptos clave utilizados en este proyecto:
+
+- `#pragma omp parallel for`: distribuye las iteraciones del bucle entre los subprocesos
+- `#pragma omp critical` / reducciones — manejo seguro de variables compartidas
+- Generadores de números aleatorios locales al subproceso (`lrand48_r`) — una secuencia independiente por subproceso
+- Desenrollado de bucles — evita condiciones de carrera sin secciones críticas al garantizar que los subprocesos siempre trabajen en celdas no adyacentes
+
+---
+
+## Requisitos
+
+- GCC con soporte para OpenMP (`-fopenmp`)
+- Cualquier distribución estándar de Linux
 
 ```bash
-# Verify OpenMP is available
+# Verificar que OpenMP está disponible
 gcc -fopenmp --version
 ```
 
 ---
 
-## Build
+## Compilación
 
 ```bash
 make
 ```
 
-To clean build artifacts:
+Para limpiar los artefactos de compilación:
 
 ```bash
 make clean
@@ -45,14 +45,14 @@ make clean
 
 ---
 
-## Usage
+## Uso
 
 ```bash
-./program [options]
-./program -h    # Show available parameters
+./program [opciones]
+./program -h    # Mostrar los parámetros disponibles
 ```
 
-Run the benchmark script to test with different thread counts:
+Ejecuta el script de benchmark para probar con diferentes números de subprocesos:
 
 ```bash
 bash Run.sh
@@ -60,68 +60,8 @@ bash Run.sh
 
 ---
 
-## Parallelization strategy
+## Estrategia de paralelización
 
-The sequential version serves as the baseline reference. The parallel version targets the most computationally expensive loop, distributing iterations across threads with OpenMP.
+La versión secuencial sirve como referencia de base
 
-To control the number of threads at runtime:
-
-```bash
-# Via environment variable
-export OMP_NUM_THREADS=4
-./program [options]
-
-# Or via argument (if supported)
-./program -nt 4 [options]
-```
-
-### Scheduling
-
-The `schedule` clause controls how iterations are assigned to threads:
-
-| Clause | Behavior |
-|---|---|
-| `static` | Equal chunks assigned upfront — best when workload is uniform |
-| `dynamic` | Iterations assigned on demand — best when workload varies |
-| `guided` | Decreasing chunk sizes — balances overhead and flexibility |
-
-### Avoiding race conditions
-
-When threads operate on data structures where neighboring elements interact, loop unrolling ensures that each thread always works on cells that are at least 2 positions apart, eliminating the need for critical sections and maximizing parallel efficiency.
-
----
-
-## Project structure
-
-```
-.
-├── program.c          # Sequential reference implementation
-├── program-OMP.c      # OpenMP parallel implementation
-├── argshand.c / .h    # Command-line argument parsing
-├── getmem.c / .h      # Memory allocation utilities
-├── utils.c / .h       # Helper functions
-├── makefile           # Build system
-└── Run.sh             # Benchmark script
-```
-
----
-
-## Performance
-
-Speedup is measured against the sequential version under identical conditions (same input size, no graphical output, fixed random seeds when applicable).
-
-| Threads | Time (s) | Speedup |
-|---------|----------|---------|
-| Seq     | —        | 1.00    |
-| 2       | —        | —       |
-| 4       | —        | —       |
-
-> Results depend on hardware. Tested on an Intel Core i5-12450H (4 cores, VM with 4 vCPUs, 4 GB RAM).
-
----
-
-## Notes
-
-- Disable graphical output when benchmarking — I/O dominates execution time
-- Set `PRINT=0` in the source before compiling for clean timing results
-- Compile without `-g` or `-pg` flags when measuring performance
+Traducción realizada con la versión gratuita del traductor DeepL.com
